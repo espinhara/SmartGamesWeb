@@ -315,19 +315,19 @@
             console.error('Erro:', error);
         });
 
-    function initMap() {
+    function initMap(storeAddresses) {
         // Crie um mapa no elemento com ID "map"
         const map = new google.maps.Map(document.getElementById('map'), {
-            center: { lat: -23.5505, lng: -46.6333 }, // São Paulo, Brasil
+            center: { lat: Number(storeAddresses[0].latitude), lng: Number(storeAddresses[0].longitude) }, // São Paulo, Brasil
             zoom: 12,
         });
 
         // Adicione um pin para cada lugar no mapa
-        data.results.forEach(place => {
+        storeAddresses.forEach(address => {
             new google.maps.Marker({
-                position: { lat: place.geometry.location.lat, lng: place.geometry.location.lng },
+                position: { lat: Number(address.latitude), lng: Number(address.longitude) },
                 map: map,
-                title: place.name,
+                title: address.name, // Use o nome do endereço como título do marcador
             });
         });
     }
@@ -354,7 +354,7 @@
                 // `;
                 // // Faça algo com os dados do recurso retornado
                 document.getElementById('modal').style.display = 'block';
-
+                initMap(data.product.storeAddresses);
             })
             .catch(error => {
                 // Trate quaisquer erros que ocorram durante a solicitação
@@ -365,7 +365,7 @@
 
 
     };
-    initMap();
+
 
     function modalClose() {
         document.getElementById('modal').style.display = 'none';
