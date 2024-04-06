@@ -24,9 +24,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
     <!-- Nepcha Analytics (nepcha.com) -->
     <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
-    <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=oMB4O8N6ZSogeWd1JxMYxeWMUfkYn3iV&callback=initMap"></script>
+    <!-- <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script> -->
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCY7RvnuOdR3Y3NrQ3-ppOHQ_7iTWc9Cqw&libraries=places&callback=initMap"
+        async defer></script>
 
 </head>
 
@@ -85,7 +86,7 @@
                             </div>
                         </div>
                         <div class="card-body px-0 pb-2">
-                            <div class="table-responsive p-0" id="productsTab">
+                            <div class="table-responsive p-0" id="productsTable">
                                 <table class="table align-items-center mb-0">
                                     <thead>
                                         <tr>
@@ -105,7 +106,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div style="display: none;" id="purchaseTab">
+                            <div style="display: none;" id="purchaseTable">
 
                             </div>
                         </div>
@@ -133,6 +134,17 @@
 <script>
     const apiUrl = 'https://smartgamesapi-production.up.railway.app/api/';
     var productInfo = null
+
+    $('#productsTab > a').click(function () {
+        $('#purchasesTable').hide()
+        $('#productsTable').show()
+    })
+
+    $('#purchaseTab > a').click(function () {
+        $('#purchasesTable').show()
+        $('#productsTable').hide()
+    })
+
     $(document).ready(function () {
 
         $('.nav-link').on('click', function () {
@@ -159,7 +171,7 @@
                 const { products } = await response.json();
 
                 // Seletor para a tabela tbody
-                const tbody = document.querySelector('table tbody');
+                const tbody = document.querySelector('#productsTable > table > tbody');
 
                 // Limpe o conteúdo atual da tabela
                 tbody.innerHTML = '';
@@ -214,30 +226,108 @@
     // Chame a função para carregar os produtos
     loadProducts();
 
+
+    const loadPurchases = async () => {
+        try {
+            // Faça uma solicitação GET para o endpoint /api/products
+            const response = await fetch(`${apiUrl}purchases/`);
+
+            // Verifique se a resposta foi bem-sucedida
+            if (response.ok) {
+                // A resposta contém os dados dos produtos
+                const { products } = await response.json();
+
+                // Seletor para a tabela tbody
+                const tbody = document.querySelector('#productsTable > table > tbody');
+
+                // Limpe o conteúdo atual da tabela
+                tbody.innerHTML = '';
+                // Percorra a lista de produtos
+                products.forEach(product => {
+                    // Crie uma nova linha para o produto
+                    const row = document.createElement('tr');
+
+                    // Colunas da linha
+                    row.innerHTML = `
+          <td>
+            <div class="d-flex px-2 py-1">
+              <div>
+                <img src="${product.imageLink}" onerror="this.src='./assets/img/not-found.jpg'" id="${product._id}" class="avatar avatar-lg me-3 border-radius-lg" height="100" alt="${product.name}">
+              </div>
+              <div class="d-flex flex-column justify-content-center">
+                <h6 class="mb-0 text-sm">${product.name}</h6>
+                <p class="text-xs text-secondary mb-0">${product.description.length > 150 ? product.description.substring(0, 150) + '...' : product.description}</p>
+              </div>
+            </div>
+          </td>
+          <td>
+            <p class="text-xs  font-weight-bold  mb-0"> R$ ${product.price}</p>
+            <p class="text-xs text-secondary-bold mb-0">${product.platforms.replaceAll("/", ' | ')}</p>
+          </td>
+          <!---<td class="align-middle text-center text-sm">
+            <span class="badge badge-sm bg-gradient-${product.status === 'Online' ? 'success' : 'danger'}">${product.status}</span>
+          </td>--->
+          <td class="align-middle text-center">
+            <span class="text-secondary text-xs font-weight-bold">${product.shops}</span>
+          </td>
+          <td class="align-middle">
+            <button class="openModalBtn" id="${product._id}" onclick="modalOpen('${product._id}')">
+                <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">Ver Detalhes</a>
+            </button>
+          </td>
+        `;
+
+                    // Adicione a linha à tabela
+                    tbody.appendChild(row);
+                });
+            } else {
+                // Se a resposta não foi bem-sucedida, imprima um erro
+                console.error('Erro ao carregar lista de produtos:', response.statusText);
+            }
+        } catch (error) {
+            // Se ocorrer um erro durante a solicitação, imprima o erro
+            console.error('Erro ao carregar lista de produtos:', error.message);
+        }
+    };
+
+    // Chame a função para carregar os produtos
+    loadProducts();
+
+
+    const apiKey = 'AIzaSyC--fByW3LhFT2UVpLA7LLodIS3gdkzWgc';
+    const searchQuery = 'restaurantes';
+    const apiUri = `https://maps.googleapis.com/maps/api/place/textsearch/json?key=${apiKey}&language=pt-br&query=${searchQuery}`;
+
+    fetch(apiUri)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao buscar lugares');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Aqui você tem os resultados da pesquisa de lugares
+            // Por exemplo, você pode acessar os resultados em data.results
+            // e colocá-los no mapa como pins
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+        });
+
     function initMap() {
-        // Coordenadas do centro do mapa
-        var center = { lat: -23.5505, lng: -46.6333 };
-
-        // Opções do mapa
-        var mapOptions = {
+        // Crie um mapa no elemento com ID "map"
+        const map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: -23.5505, lng: -46.6333 }, // São Paulo, Brasil
             zoom: 12,
-            center: center
-        };
+        });
 
-        // Criar um novo mapa
-        var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-
-        // Coordenadas dos marcadores
-        var markerPositions = [
-            { lat: -23.5505, lng: -46.6333 }, // Exemplo de coordenadas para um marcador
-            // Adicione mais coordenadas conforme necessário
-        ];
-
-        // Adicionar marcadores ao mapa
-        markerPositions.forEach(function (position) {
+        // Adicione um pin para cada lugar no mapa
+        data.results.forEach(place => {
             new google.maps.Marker({
-                position: position,
-                map: map
+                position: { lat: place.geometry.location.lat, lng: place.geometry.location.lng },
+                map: map,
+                title: place.name,
             });
         });
     }
@@ -259,7 +349,6 @@
                 document.getElementById('productDescription').textContent = data.product.description;
                 document.getElementById('productImg').src = data.product.imageLink;
                 document.getElementById('productPrice').textContent = 'R$ ' + data.product.price;
-                initMap();
                 // document.getElementById('map').innerHTML = `
 
                 // `;
@@ -271,10 +360,12 @@
                 // Trate quaisquer erros que ocorram durante a solicitação
                 console.error('Erro:', error);
             });
-        productInfo = response.product;
+        console.log(response)
+        productInfo = response?.product;
 
 
     };
+    initMap();
 
     function modalClose() {
         document.getElementById('modal').style.display = 'none';
@@ -300,8 +391,8 @@
                 // Verifique se a resposta da API foi bem-sucedida
                 if (!response.ok) {
                     // throw new Error('Erro ao fazer o POST');
-                    modalClose();
                 }
+                modalClose();
                 // Parse a resposta JSON
                 return response.json();
             })
