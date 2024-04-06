@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartGames Web</title>
+    <link rel="stylesheet" type="text/css"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+    <!-- Nucleo Icons -->
+    <link href="./assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="./assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <!-- CSS Files -->
+    <link id="pagestyle" href="./assets/css/material-dashboard.css?v=3.1.0" rel="stylesheet" />
+    <link href="./assets/css/style.css" rel="stylesheet" />
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+    <!-- Nepcha Analytics (nepcha.com) -->
+    <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
+    <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=oMB4O8N6ZSogeWd1JxMYxeWMUfkYn3iV&callback=initMap"></script>
+
+</head>
+
+<body class="g-sidenav-show  bg-gray-200">
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="productName"></h2>
+            <img src="" alt="" id="productImg">
+            <p id="productDescription"></p>
+            Por apenas: <h3 id="productPrice"></h3>
+            <div class="row-mt-3" id="map"></div>
+            <div class="row-mt-3">
+                <div class="text-center">
+                    <button id="mostrar" type="submit" onclick="purchase(productInfo)"
+                        class="btn bg-gradient-info my-4 w-100 h-100  mb-2">Comprar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+        <div class="container-fluid py-4">
+            <div class="row" id="search">
+                <div class="col-12">
+                    <div class="card my-4">
+                        <div class="col-lg-8 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
+                            <div class="nav-wrapper position-relative end-0">
+                                <ul class="nav nav-pills nav-fill p-1" role="tablist">
+                                    <li id="productsTab" class="nav-item" role="presentation">
+                                        <a class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab1"
+                                            href="javascript:;" role="tab1" aria-selected="true">
+                                            <i class="material-icons text-lg position-relative">assignment</i>
+                                            <span class="ms-1">Produtos</span>
+                                        </a>
+                                    </li>
+                                    <li id="purchaseTab" class="nav-item" role="presentation">
+                                        <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab2" href="javascript:;"
+                                            role="tab2" aria-selected="false" tabindex="-1">
+                                            <i class="material-icons text-lg position-relative">ballot</i>
+                                            <span class="ms-1">Compras</span>
+                                        </a>
+                                    </li>
+                                    <!-- <li class="nav-item" role="presentation">
+                                        <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="javascript:;"
+                                            role="tab" aria-selected="false" tabindex="-1">
+                                            <i class="material-icons text-lg position-relative">settings</i>
+                                            <span class="ms-1">Settings</span>
+                                        </a>
+                                    </li> -->
+                                    <div class="moving-tab position-absolute nav-link"
+                                        style="padding: 0px; transition: all 0.5s ease 0s; transform: translate3d(0px, 0px, 0px); width: 50%;"
+                                        aria-selected="false" tabindex="-1" role="tab"><a
+                                            class="nav-link mb-0 px-0 py-1 active " data-bs-toggle="tab"
+                                            href="javascript:;" role="tab" aria-selected="true">-</a></div>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-body px-0 pb-2">
+                            <div class="table-responsive p-0" id="productsTab">
+                                <table class="table align-items-center mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Jogos</th>
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                                Plataforma/Preços</th>
+                                            <th
+                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Diponivél em:</th>
+                                            <th class="text-secondary opacity-7"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="display: none;" id="purchaseTab">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    </div>
+    <footer class="footer py-4  ">
+        <div class="container-fluid">
+            <div class="row align-items-center justify-content-lg-between">
+                <div class="col-lg-12 mb-lg-0 mb-4">
+                    <div class="copyright text-center font-weight-bold text-sm text-muted">
+                        SMART GAMES ©
+                        <script>
+                            document.write(new Date().getFullYear())
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+<script>
+    const apiUrl = 'https://smartgamesapi-production.up.railway.app/api/';
+    var productInfo = null
+    $(document).ready(function () {
+
+        $('.nav-link').on('click', function () {
+            var position = $(this).position(); // Obter a posição da aba clicada
+            var width = $(this).outerWidth(); // Obter a largura da aba clicada
+
+            // Atualizar a posição e a largura da barra móvel
+            $('.moving-tab').css({
+                'transform': 'translate3d(' + position.left + 'px, 0px, 0px)',
+                'width': width + 'px'
+            });
+        });
+    });
+    // Função para carregar a lista de produtos do backend
+    // Função para carregar a lista de produtos do backend
+    const loadProducts = async () => {
+        try {
+            // Faça uma solicitação GET para o endpoint /api/products
+            const response = await fetch(`${apiUrl}products/`);
+
+            // Verifique se a resposta foi bem-sucedida
+            if (response.ok) {
+                // A resposta contém os dados dos produtos
+                const { products } = await response.json();
+
+                // Seletor para a tabela tbody
+                const tbody = document.querySelector('table tbody');
+
+                // Limpe o conteúdo atual da tabela
+                tbody.innerHTML = '';
+                // Percorra a lista de produtos
+                products.forEach(product => {
+                    // Crie uma nova linha para o produto
+                    const row = document.createElement('tr');
+
+                    // Colunas da linha
+                    row.innerHTML = `
+          <td>
+            <div class="d-flex px-2 py-1">
+              <div>
+                <img src="${product.imageLink}" onerror="this.src='./assets/img/not-found.jpg'" id="${product._id}" class="avatar avatar-lg me-3 border-radius-lg" height="100" alt="${product.name}">
+              </div>
+              <div class="d-flex flex-column justify-content-center">
+                <h6 class="mb-0 text-sm">${product.name}</h6>
+                <p class="text-xs text-secondary mb-0">${product.description.length > 150 ? product.description.substring(0, 150) + '...' : product.description}</p>
+              </div>
+            </div>
+          </td>
+          <td>
+            <p class="text-xs  font-weight-bold  mb-0"> R$ ${product.price}</p>
+            <p class="text-xs text-secondary-bold mb-0">${product.platforms.replaceAll("/", ' | ')}</p>
+          </td>
+          <!---<td class="align-middle text-center text-sm">
+            <span class="badge badge-sm bg-gradient-${product.status === 'Online' ? 'success' : 'danger'}">${product.status}</span>
+          </td>--->
+          <td class="align-middle text-center">
+            <span class="text-secondary text-xs font-weight-bold">${product.shops}</span>
+          </td>
+          <td class="align-middle">
+            <button class="openModalBtn" id="${product._id}" onclick="modalOpen('${product._id}')">
+                <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">Ver Detalhes</a>
+            </button>
+          </td>
+        `;
+
+                    // Adicione a linha à tabela
+                    tbody.appendChild(row);
+                });
+            } else {
+                // Se a resposta não foi bem-sucedida, imprima um erro
+                console.error('Erro ao carregar lista de produtos:', response.statusText);
+            }
+        } catch (error) {
+            // Se ocorrer um erro durante a solicitação, imprima o erro
+            console.error('Erro ao carregar lista de produtos:', error.message);
+        }
+    };
+
+    // Chame a função para carregar os produtos
+    loadProducts();
+
+    function initMap() {
+        // Coordenadas do centro do mapa
+        var center = { lat: -23.5505, lng: -46.6333 };
+
+        // Opções do mapa
+        var mapOptions = {
+            zoom: 12,
+            center: center
+        };
+
+        // Criar um novo mapa
+        var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+        // Coordenadas dos marcadores
+        var markerPositions = [
+            { lat: -23.5505, lng: -46.6333 }, // Exemplo de coordenadas para um marcador
+            // Adicione mais coordenadas conforme necessário
+        ];
+
+        // Adicionar marcadores ao mapa
+        markerPositions.forEach(function (position) {
+            new google.maps.Marker({
+                position: position,
+                map: map
+            });
+        });
+    }
+    async function modalOpen(product) {
+
+        // Faça a solicitação GET para buscar o recurso pelo ID
+        const response = await fetch(`${apiUrl}products/` + product)
+            .then(response => {
+                // Verifique se a resposta da API foi bem-sucedida
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar o recurso');
+                }
+                // Parse a resposta JSON
+                return response.json();
+            })
+            .then(data => {
+                console.log('Recurso encontrado:', data);
+                document.getElementById('productName').textContent = data.product.name;
+                document.getElementById('productDescription').textContent = data.product.description;
+                document.getElementById('productImg').src = data.product.imageLink;
+                document.getElementById('productPrice').textContent = 'R$ ' + data.product.price;
+                initMap();
+                // document.getElementById('map').innerHTML = `
+
+                // `;
+                // // Faça algo com os dados do recurso retornado
+                document.getElementById('modal').style.display = 'block';
+
+            })
+            .catch(error => {
+                // Trate quaisquer erros que ocorram durante a solicitação
+                console.error('Erro:', error);
+            });
+        productInfo = response.product;
+
+
+    };
+
+    function modalClose() {
+        document.getElementById('modal').style.display = 'none';
+    }
+
+    function purchase(product) {
+        // Dados do produto a ser enviado
+        const productData = {
+            product, // Substitua productId pelo ID do produto que deseja enviar
+            discount: 0
+        };
+
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(productData)
+        };
+
+        fetch(`${apiUrl}purchases`, options)
+            .then(response => {
+                // Verifique se a resposta da API foi bem-sucedida
+                if (!response.ok) {
+                    // throw new Error('Erro ao fazer o POST');
+                    modalClose();
+                }
+                // Parse a resposta JSON
+                return response.json();
+            })
+            .then(data => {
+                // Faça algo com os dados retornados, se necessário
+                console.log('Resposta do POST:', data);
+            })
+            .catch(error => {
+                // Trate quaisquer erros que ocorram durante a solicitação
+                console.error('Erro:', error);
+            });
+    }
+    // const openModalBtn = document.querySelector('.openModalBtn');
+    const modal = document.getElementById('modal');
+    const closeModalBtn = modal.querySelector('.close');
+
+    closeModalBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+</script>
+
+</html>
